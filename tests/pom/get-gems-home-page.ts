@@ -1,6 +1,8 @@
 import { Locator, Page } from '@playwright/test';
 
 import { BasePage } from './base-page';
+import { HeaderFragment } from './fragments/header.fragment';
+import { WalletConnectFragment } from './fragments/wallet-connect.fragment';
 import { test } from '../fixtures';
 
 export class GetGemsHomePage extends BasePage {
@@ -32,5 +34,19 @@ export class GetGemsHomePage extends BasePage {
 
   async selectWallet(name: string) {
     await this.walletConnectButton.filter({ hasText: name }).click();
+  }
+
+  /**
+   * ----------------------------------------------------------------
+   * FRAGMENTS
+   * ----------------------------------------------------------------
+   */
+
+  header(){
+    return new HeaderFragment(this.page);
+  }
+
+  walletConnect() {
+    return new WalletConnectFragment(this.page);
   }
 }

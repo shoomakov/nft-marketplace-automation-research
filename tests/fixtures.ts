@@ -1,7 +1,9 @@
-import { test as base, expect, chromium, type BrowserContext } from '@playwright/test';
+import { test as base, expect, chromium, type BrowserContext, type Page } from '@playwright/test';
 import { GetGemsHomePage } from './pom/get-gems-home-page';
 import { TonWalletPage } from './pom/ton-wallet-page';
 import path from 'path';
+
+const findPageByTitle = (title: string, pages: Page[]) => pages.find(async item => await item.title() === title)
 
 export const test = base.extend<{
   context: BrowserContext;
@@ -14,6 +16,7 @@ export const test = base.extend<{
     const context = await chromium.launchPersistentContext('', {
       headless: false,
       args: [
+        '--window-size=1920,1080',
         `--disable-extensions-except=${pathToExtension}`,
         `--load-extension=${pathToExtension}`,
       ],
@@ -38,13 +41,17 @@ export const test = base.extend<{
     await use(extensionId);
   },
   getGemsHomePage: async ({ context }, use) => {
-    const pages = context.pages();
-    const home = new GetGemsHomePage(pages[0]);
+    // let page = findPageByTitle('', context.pages())
+    // if (!page) 
+    //   page = context.pages()[0];
+      
+    const home = new GetGemsHomePage(context.pages()[0]);
     await use(home);
   },
   tonWalletPage: async ({ context, extensionId }, use) => {
-    const pages = context.pages();
-    const tonWalletPage = new TonWalletPage(pages[1], extensionId);
+    const [,page] = context.pages();
+    const tonWalletPage = new TonWalletPage(page, extensionId);
+
     await use(tonWalletPage);
   },
 });

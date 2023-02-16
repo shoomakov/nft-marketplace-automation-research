@@ -14,7 +14,7 @@ export const test = base.extend<{
   context: async ({ }, use) => {
     const pathToExtension = path.join(__dirname, '../userData/tonwallet/1.1.42_0');
     const context = await chromium.launchPersistentContext('', {
-      headless: false,
+      headless: true,
       args: [
         '--window-size=1920,1080',
         `--disable-extensions-except=${pathToExtension}`,

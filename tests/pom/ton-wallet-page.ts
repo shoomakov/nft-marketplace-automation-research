@@ -31,6 +31,8 @@ export class TonWalletPage extends BasePage {
   readonly enterPasswordPopup: Locator;
   readonly enterPasswordInput: Locator;
   readonly enterPasswordOkBtn: Locator;
+  readonly mainReceiveBtn: Locator;
+  readonly receiveCloseBtn: Locator;
   public secretWords: string[];
 
   constructor(page: Page, extensionId: string) {
@@ -61,6 +63,8 @@ export class TonWalletPage extends BasePage {
     this.enterPasswordPopup = page.locator('#enterPassword');
     this.enterPasswordInput = this.enterPasswordPopup.locator('#enterPassword_input');
     this.enterPasswordOkBtn = this.enterPasswordPopup.locator('#enterPassword_okBtn');
+    this.mainReceiveBtn = page.locator('#main_receiveBtn');
+    this.receiveCloseBtn = page.locator('#receive_closeBtn');
     this.imSureBtn = this.alertPopup.locator('.btn-lite', { hasText: 'I\'M SURE' });
   }
 
@@ -108,9 +112,9 @@ export class TonWalletPage extends BasePage {
 
     const secretWords = [];
     [...map].forEach((item) => {
-        let i: number = Number(item[0].replace('.', ''));
-        // @ts-ignore
-        secretWords[i] = item[1];
+      let i: number = Number(item[0].replace('.', ''));
+      // @ts-ignore
+      secretWords[i] = item[1];
     });
 
     secretWords.shift();
@@ -181,10 +185,25 @@ export class TonWalletPage extends BasePage {
   }
 
   async signConfirm() {
+    await this.page.bringToFront();
     await test.expect(this.signConfirmPopup).toBeVisible();
     await this.signConfirmOkBtn.filter({ hasText: 'SIGN' }).click();
     // await test.expect(this.enterPasswordPopup).toBeVisible();
     await this.enterPasswordInput.fill('password');
     await this.enterPasswordOkBtn.filter({ hasText: 'NEXT' }).click();
+  }
+
+  async openReceivePopup() {
+    await this.mainReceiveBtn.click();
+  }
+
+  async closeReceivePopup() {
+    await this.receiveCloseBtn.click();
+  }
+
+  async getAddress() {
+    let address = (await this.page.locator('.my-addr').first().innerText()).valueOf();
+
+    return address;
   }
 }

@@ -2,6 +2,7 @@
 This repository contains research on automating the testing of NFT marketplaces using Playwright, TypeScript, and the Page Object Model design pattern. The research includes an exploration of the TON blockchain and an investigation of the potential benefits of Chat GPT in automated testing.
 
 ## Table of Contents
+
 - [NFT Marketplace Automation Research](#nft-marketplace-automation-research)
   - [Table of Contents](#table-of-contents)
     - [Installation](#installation)

@@ -1,4 +1,3 @@
-import { GetGemsHomePage } from './pom/get-gems-home-page';
 import { TonWalletPage } from './pom/ton-wallet-page';
 import { saveSecretWords } from './utils/save-secret-words';
 import { test } from './fixtures';
@@ -6,6 +5,7 @@ import { test } from './fixtures';
 test.describe('Homepage', () => {
   // test.skip(({ browserName }) => browserName !== 'chromium', 'Chromium only!');
 
+  let address;
   test.beforeAll(async ({ page, extensionId }) => {
     const tonWalletPage = new TonWalletPage(page, extensionId);
     await tonWalletPage.goto();
@@ -21,12 +21,12 @@ test.describe('Homepage', () => {
     await tonWalletPage.viewMyWallet();
     await tonWalletPage.viewAbout();
     await tonWalletPage.toggleNetwork();
+    await tonWalletPage.openReceivePopup();
+    address = await tonWalletPage.getAddress();
+    await tonWalletPage.closeReceivePopup();
   });
 
-  test('should connect Ton Wallet correctly', async ({ context, getGemsHomePage, extensionId }) => {
-    const pages = context.pages();
-    const tonWalletPage = new TonWalletPage(pages[1], extensionId);
-
+  test('should connect Ton Wallet correctly', async ({ getGemsHomePage, tonWalletPage }) => {
     await test.step('Loaded home page', async () => {
       await getGemsHomePage.bringToFront();
       await getGemsHomePage.goto();
@@ -34,11 +34,11 @@ test.describe('Homepage', () => {
     });
 
     await test.step('Click on "Connect Wallet"', async () => {
-      await getGemsHomePage.openWalletConnectModal();
+      await getGemsHomePage.header().openConnectWalletModal();
     });
     
     await test.step('Select wallet on modal', async () => {
-      await getGemsHomePage.selectWallet('TON Wallet');
+      await getGemsHomePage.walletConnect().selectWalletInModal('TON Wallet');
     });
     
     await test.step('Sign confirm selected wallet on TON Wallet extension', async () => {
@@ -50,6 +50,12 @@ test.describe('Homepage', () => {
       getGemsHomePage.bringToFront();
       await test.expect(getGemsHomePage.headerProfile.first()).toBeVisible();
     });
+
+    await test.step('should be visible piece of current address on tooltip', async () => {
+      const addressPiece = address.slice(0, -43);
+      await getGemsHomePage.header().openTooltip();
+      await test.expect(getGemsHomePage.header().tooltipUserName.first()).toContainText(addressPiece);
+    });    
   });
 
 });

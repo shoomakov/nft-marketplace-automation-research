@@ -9,6 +9,7 @@ export class HeaderFragment extends BasePage {
   readonly connectWalletButton: Locator;
   readonly tooltip: Locator;
   readonly tooltipUserName: Locator; //  LibraryDisplay LibraryDisplay--l-3 LibraryDisplay--w-semi-bold HeaderProfile__tooltip_user_name
+  readonly cryptoPriceAmount: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -18,6 +19,7 @@ export class HeaderFragment extends BasePage {
     this.headerProfile = this.headerRight.locator('.HeaderProfile');
     this.tooltip = this.headerProfile.locator('.Tooltip');
     this.tooltipUserName = this.tooltip.locator('.HeaderProfile__tooltip_user_name');
+    this.cryptoPriceAmount = this.tooltip.locator('.CryptoPrice__amount');
   }
 
   async openConnectWalletModal() {

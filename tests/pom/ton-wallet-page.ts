@@ -33,6 +33,7 @@ export class TonWalletPage extends BasePage {
   readonly enterPasswordOkBtn: Locator;
   readonly mainReceiveBtn: Locator;
   readonly receiveCloseBtn: Locator;
+  readonly balance: Locator;
   public secretWords: string[];
 
   constructor(page: Page, extensionId: string) {
@@ -65,6 +66,7 @@ export class TonWalletPage extends BasePage {
     this.enterPasswordOkBtn = this.enterPasswordPopup.locator('#enterPassword_okBtn');
     this.mainReceiveBtn = page.locator('#main_receiveBtn');
     this.receiveCloseBtn = page.locator('#receive_closeBtn');
+    this.balance = page.locator('#balance');
     this.imSureBtn = this.alertPopup.locator('.btn-lite', { hasText: 'I\'M SURE' });
   }
 
@@ -205,5 +207,11 @@ export class TonWalletPage extends BasePage {
     let address = (await this.page.locator('.my-addr').first().innerText()).valueOf();
 
     return address;
+  }
+
+  async getBalance() {
+    let balance = (await this.balance.first().innerText()).valueOf();
+
+    return balance;
   }
 }

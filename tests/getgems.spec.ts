@@ -3,7 +3,7 @@ import { saveSecretWords } from './utils/save-secret-words';
 import { test } from './fixtures';
 
 test.describe('Homepage', () => {
-  // test.skip(({ browserName }) => browserName !== 'chromium', 'Chromium only!');
+  test.skip(({ browserName }) => browserName !== 'chromium', 'Chromium only!');
 
   let address;
   test.beforeAll(async ({ page, extensionId }) => {
@@ -25,6 +25,18 @@ test.describe('Homepage', () => {
     address = await tonWalletPage.getAddress();
     await tonWalletPage.closeReceivePopup();
   });
+
+  test.afterEach(async ({ context }, testInfo) => {
+    console.log(`Finished ${testInfo.title} with status ${testInfo.status}`);
+    const pages = context.pages();
+
+    debugger
+    console.log(pages)  
+    const screenshot = await pages[0].screenshot();
+    await testInfo.attach('screenshot', { body: screenshot, contentType: 'image/png' });      
+    const screenshot1 = await pages[1].screenshot();
+    await testInfo.attach('screenshot', { body: screenshot1, contentType: 'image/png' });          
+  });  
 
   test('should connect Ton Wallet correctly', async ({ getGemsHomePage, tonWalletPage }) => {
     await test.step('Loaded home page', async () => {
@@ -56,6 +68,11 @@ test.describe('Homepage', () => {
       await getGemsHomePage.header().openTooltip();
       await test.expect(getGemsHomePage.header().tooltipUserName.first()).toContainText(addressPiece);
     });    
-  });
 
+    await test.step('wallet balance should displayed correctly', async () => {
+      const balance = await tonWalletPage.getBalance();
+      await getGemsHomePage.header().openTooltip();
+      await test.expect(getGemsHomePage.header().cryptoPriceAmount.first()).toContainText(balance);
+    });        
+  });
 });

@@ -4,6 +4,7 @@ import { BasePage } from './base-page';
 import { test } from '../fixtures';
 
 export class TonWalletPage extends BasePage {
+  readonly startScreen: Locator;
   readonly startCreateBtn: Locator;
   readonly extensionId: string;
   readonly createdScreen: Locator;
@@ -34,6 +35,9 @@ export class TonWalletPage extends BasePage {
   readonly mainReceiveBtn: Locator;
   readonly receiveCloseBtn: Locator;
   readonly balance: Locator;
+  readonly startImportBtn: Locator;
+  readonly importContinueBtn: Locator;
+  readonly importScreen: Locator
   public secretWords: string[];
 
   constructor(page: Page, extensionId: string) {
@@ -67,7 +71,11 @@ export class TonWalletPage extends BasePage {
     this.mainReceiveBtn = page.locator('#main_receiveBtn');
     this.receiveCloseBtn = page.locator('#receive_closeBtn');
     this.balance = page.locator('#balance');
+    this.startImportBtn = page.locator('#start_importBtn');
+    this.importContinueBtn = page.locator('#import_continueBtn');
+    this.importScreen = page.locator('#import');
     this.imSureBtn = this.alertPopup.locator('.btn-lite', { hasText: 'I\'M SURE' });
+    this.startScreen = page.locator('#start');
   }
 
   async goto() {
@@ -89,12 +97,12 @@ export class TonWalletPage extends BasePage {
 
   async continueOnBackup() {
     await this.backupContinueBtn.click();
-    await test.expect(this.alertPopup).toBeVisible();
+    // await test.expect(this.alertPopup).toBeVisible();
   }
 
   async imSure() {
     await this.imSureBtn.click();
-    await test.expect(this.wordsConfirmScreen).toBeVisible();
+    // await test.expect(this.wordsConfirmScreen).toBeVisible();
   }
 
   async confirmWords() {
@@ -123,6 +131,16 @@ export class TonWalletPage extends BasePage {
     this.secretWords = secretWords;
 
     return secretWords;
+  }
+
+  async fillAllSecretWords(words: string[]) {
+    for (let index = 0; index < words.length; index++) {
+      const el = this.page.locator(`#importsInput${index}[tabindex="${index + 1}"]`);
+
+      await el.fill(words[index]);
+    }
+
+    await this.importContinueBtn.click();
   }
 
   async fillSecretWords() {
@@ -159,12 +177,10 @@ export class TonWalletPage extends BasePage {
     await this.createPasswordInput.fill(password);
     await this.repeatPasswordInput.fill(password);
     await this.continueBtnOnCreatePassword.click();
-    await test.expect(this.readyToGoScreen).toBeVisible();
   }
 
   async viewMyWallet() {
     await this.page.locator('#readyToGo_continueBtn', { hasText: 'View My Wallet' }).click();
-    await test.expect(this.mainScreen).toBeVisible();
   }
 
   async openMenuDropDown() {

@@ -3,6 +3,7 @@ import { GetGemsHomePage } from './pom/get-gems-home-page';
 import { TonWalletPage } from './pom/ton-wallet-page';
 import path from 'path';
 
+
 const findPageByTitle = (title: string, pages: Page[]) => pages.find(async item => await item.title() === title)
 
 export const test = base.extend<{

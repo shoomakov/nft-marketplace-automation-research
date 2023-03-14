@@ -1,6 +1,6 @@
-import { TonWalletPage } from './pom/ton-wallet-page';
-import { saveSecretWords } from './utils/save-secret-words';
-import { test } from './fixtures';
+import { TonWalletPage } from '../pom/ton-wallet-page';
+import { saveSecretWords } from '../utils/save-secret-words';
+import { test } from '../fixtures';
 
 test.describe('Homepage', () => {
   test.skip(({ browserName }) => browserName !== 'chromium', 'Chromium only!');
@@ -24,6 +24,7 @@ test.describe('Homepage', () => {
     await tonWalletPage.openReceivePopup();
     address = await tonWalletPage.getAddress();
     await tonWalletPage.closeReceivePopup();
+    debugger
   });
 
   test.afterEach(async ({ context }, testInfo) => {
@@ -73,6 +74,13 @@ test.describe('Homepage', () => {
       const balance = await tonWalletPage.getBalance();
       await getGemsHomePage.header().openTooltip();
       await test.expect(getGemsHomePage.header().cryptoPriceAmount.first()).toContainText(balance);
-    });        
+    });  
+    
+    await test.step('link to create single NFT should works', async () => {
+      await getGemsHomePage.bringToFront();
+      await getGemsHomePage.header().selectNFTBtn.hover();
+      await getGemsHomePage.page.getByRole('link', { name: 'Single NFT' }).click();
+      await test.expect(getGemsHomePage.page).toHaveURL('https://testnet.getgems.io/nft/create?nft_type=single_nft');
+    });       
   });
 });

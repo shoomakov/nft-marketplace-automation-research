@@ -2,6 +2,7 @@ import { test as base, expect, chromium, type BrowserContext, type Page } from '
 import { GetGemsHomePage } from './pom/get-gems-home-page';
 import { TonWalletPage } from './pom/ton-wallet-page';
 import path from 'path';
+import { TonWalletPageActions } from './poa/ton-wallet-page-actions';
 
 
 const findPageByTitle = (title: string, pages: Page[]) => pages.find(async item => await item.title() === title)
@@ -11,6 +12,7 @@ export const test = base.extend<{
   extensionId: string;
   getGemsHomePage: GetGemsHomePage;
   tonWalletPage: TonWalletPage;
+  walletActions: TonWalletPageActions;
 }>({
   context: async ({ }, use) => {
     const pathToExtension = path.join(__dirname, '../userData/tonwallet/1.1.42_0');
@@ -65,5 +67,14 @@ export const test = base.extend<{
     const tonWalletPage = new TonWalletPage(page, extensionId);
 
     await use(tonWalletPage);
+  },
+  walletActions: async ({ context, extensionId }, use) => {
+    const pages = context.pages();
+    debugger
+    const [,page] = context.pages();
+    const tonWalletPage = new TonWalletPage(pages[0], extensionId);
+    const actions = new TonWalletPageActions(tonWalletPage);
+
+    await use(actions);
   },
 });

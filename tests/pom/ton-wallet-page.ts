@@ -39,6 +39,7 @@ export class TonWalletPage extends BasePage {
   readonly importContinueBtn: Locator;
   readonly importScreen: Locator
   public secretWords: string[];
+  public createdAddress: string;
 
   constructor(page: Page, extensionId: string) {
     super(page);
@@ -111,6 +112,7 @@ export class TonWalletPage extends BasePage {
 
   /**
    * @todo move to utils?
+   * @todo rename to setSecretWords
    */
   async getSecretWords(): Promise<string[]> {
     const map = new Map();
@@ -162,7 +164,7 @@ export class TonWalletPage extends BasePage {
     console.log('data-word', dataWord);
   }
 
-  async getConfirmWordsNums() {
+  protected async getConfirmWordsNums() {
     let numbers: number[] = [];
     const nums = this.confirmWordsNums.locator('span');
     for (const num of await nums.all()) {
@@ -221,6 +223,7 @@ export class TonWalletPage extends BasePage {
 
   async getAddress() {
     let address = (await this.page.locator('.my-addr').first().innerText()).valueOf();
+    this.createdAddress = address;
 
     return address;
   }

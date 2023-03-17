@@ -30,7 +30,7 @@ test.describe('TON Wallet (only method)', () => {
     let createdWallet: TonWallet;
 
     await test.step('run create wallet operations', async () => {
-      await walletActions.runCreateWalletOperations('1');
+      await walletActions.runCreateWalletOperations();
       mainWallet = walletActions.buildMainWallet();
       createdWallet = walletActions.buildCreatedWallet();
     });

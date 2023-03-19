@@ -29,7 +29,10 @@ export class HeaderFragment extends BasePage {
   }
 
   async openTooltip() {
+    // await this.page.locator('[data-tooltip-id="tooltip-header-profile"]').hover();
+    await this.page.screenshot({ path: 'toooltip.png' });
     await this.headerProfile.first().click();
+    await this.page.screenshot({ path: 'toooltip_open.png' });
   }
 
   async getMyAddressOnTooltip() {

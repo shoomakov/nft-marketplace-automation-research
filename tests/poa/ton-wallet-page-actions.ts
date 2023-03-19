@@ -10,10 +10,10 @@ interface Wallets {
 
 export class TonWalletPageActions {
     private generatedMnemonic: string;
-    private createdAddress: string;
+    public createdAddress: string;
     private mainMnemonic: string;
     private password: string;
-    private mainAddress: string;
+    public mainAddress: string;
     private readonly approximateFee = 0.003 + 0.000009999;
     public wallets?: Wallets;
 

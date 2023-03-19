@@ -1,4 +1,4 @@
-import { test as base, expect, chromium, type BrowserContext, type Page } from '@playwright/test';
+import { test as base, expect, chromium, type BrowserContext, type Page, type Worker } from '@playwright/test';
 import { GetGemsHomePage } from './pom/get-gems-home-page';
 import { TonWalletPage } from './pom/ton-wallet-page';
 import path from 'path';
@@ -13,6 +13,7 @@ export const test = base.extend<{
   getGemsHomePage: GetGemsHomePage;
   tonWalletPage: TonWalletPage;
   walletActions: TonWalletPageActions;
+  background: Worker;
 }>({
   context: async ({ }, use) => {
     const pathToExtension = path.join(__dirname, '../userData/tonwallet/1.1.42_0');
@@ -28,6 +29,13 @@ export const test = base.extend<{
     });
     await use(context);
     await context.close();
+  },
+  background: async ({context}, use) => {
+    let [background] = context.serviceWorkers();
+    if (!background)
+      background = await context.waitForEvent('serviceworker');
+
+    await use(background)  
   },
   extensionId: async ({ context }, use) => {
     /*

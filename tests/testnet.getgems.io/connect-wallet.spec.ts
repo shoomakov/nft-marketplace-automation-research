@@ -1,45 +1,43 @@
-import { TonWalletPage } from '../pom/ton-wallet-page';
-import { saveSecretWords } from '../utils/save-secret-words';
+import { TonWallet } from '../utils/ton-wallet';
 import { test } from '../fixtures';
 
-test.describe('Homepage', () => {
-  test.skip(({ browserName }) => browserName !== 'chromium', 'Chromium only!');
+test.describe('getgems.io', () => {
+
+  let mainWallet: TonWallet;
+  let createdWallet: TonWallet;
 
   let address;
-  test.beforeAll(async ({ page, extensionId }) => {
-    const tonWalletPage = new TonWalletPage(page, extensionId);
-    await tonWalletPage.goto();
-    await tonWalletPage.createWallet();
-    await tonWalletPage.continueOnCreated();
-    await tonWalletPage.getSecretWords();
+  test.beforeAll(async ({ walletActions }) => {
+    await walletActions.runCreateWalletOperations();
+    mainWallet = walletActions.buildMainWallet();
+    createdWallet = walletActions.buildCreatedWallet();
 
-    saveSecretWords(tonWalletPage.secretWords.join(' '));
-    await tonWalletPage.continueOnBackup();
-    await tonWalletPage.imSure();
-    await tonWalletPage.fillSecretWords();
-    await tonWalletPage.createPassword('password');
-    await tonWalletPage.viewMyWallet();
-    await tonWalletPage.viewAbout();
-    await tonWalletPage.toggleNetwork();
-    await tonWalletPage.openReceivePopup();
-    address = await tonWalletPage.getAddress();
-    await tonWalletPage.closeReceivePopup();
-    debugger
+    await mainWallet.sendTransaction(walletActions.createdAddress, '0.5');     
+    await mainWallet.logBalance();    
+
+    // temp
+    address = walletActions.createdAddress;
   });
 
   test.afterEach(async ({ context }, testInfo) => {
     console.log(`Finished ${testInfo.title} with status ${testInfo.status}`);
     const pages = context.pages();
 
-    debugger
-    console.log(pages)  
-    const screenshot = await pages[0].screenshot();
-    await testInfo.attach('screenshot', { body: screenshot, contentType: 'image/png' });      
-    const screenshot1 = await pages[1].screenshot();
-    await testInfo.attach('screenshot', { body: screenshot1, contentType: 'image/png' });          
-  });  
+    if (pages.length > 0) {
+      for (let i = 0; i < pages.length; i++) {
+        const screenshot = await pages[i].screenshot();
+        const title = await pages[i].title();
+        await testInfo.attach(`Screenshot #${i}: "${title}"`, { body: screenshot, contentType: 'image/png' });   
+      } 
+    } 
+  });
 
-  test('should connect Ton Wallet correctly', async ({ getGemsHomePage, tonWalletPage }) => {
+  test.afterAll(async ({ walletActions }) => {
+    await createdWallet.sendTransaction(walletActions.mainAddress, '0.4'); 
+    await createdWallet.logBalance(); 
+  });
+
+  test('should connect Ton Wallet correctly', async ({ getGemsHomePage, tonWalletPage, context, extensionId }) => {
     await test.step('Loaded home page', async () => {
       await getGemsHomePage.bringToFront();
       await getGemsHomePage.goto();
@@ -49,9 +47,26 @@ test.describe('Homepage', () => {
     await test.step('Click on "Connect Wallet"', async () => {
       await getGemsHomePage.header().openConnectWalletModal();
     });
+
+    await test.step('should be 2 pages on context', async () => {
+      const pages = context.pages();
+      await test.expect(pages.length).toBe(2);
+    });
     
+    await test.step('refresh TON Wallet page', async () => {
+      await tonWalletPage.bringToFront();
+      await tonWalletPage.page.reload();
+      await tonWalletPage.page.locator('#main_refreshBtn').click();
+    });
+
     await test.step('Select wallet on modal', async () => {
+      await getGemsHomePage.bringToFront();
       await getGemsHomePage.walletConnect().selectWalletInModal('TON Wallet');
+    });
+
+    await test.step('should be visible signConfirm modal on TON Wallet page', async () => {
+      await tonWalletPage.bringToFront();
+      await test.expect(tonWalletPage.signConfirmPopup).toBeVisible();
     });
     
     await test.step('Sign confirm selected wallet on TON Wallet extension', async () => {
@@ -60,12 +75,14 @@ test.describe('Homepage', () => {
     });    
 
     await test.step('On homepage should be visible header profile avatar', async () => {
-      getGemsHomePage.bringToFront();
+      await getGemsHomePage.bringToFront();
       await test.expect(getGemsHomePage.headerProfile.first()).toBeVisible();
     });
 
     await test.step('should be visible piece of current address on tooltip', async () => {
       const addressPiece = address.slice(0, -43);
+
+      await getGemsHomePage.bringToFront();
       await getGemsHomePage.header().openTooltip();
       await test.expect(getGemsHomePage.header().tooltipUserName.first()).toContainText(addressPiece);
     });    

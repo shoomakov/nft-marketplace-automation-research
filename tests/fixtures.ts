@@ -18,10 +18,12 @@ export const test = base.extend<{
     const pathToExtension = path.join(__dirname, '../userData/tonwallet/1.1.42_0');
     const context = await chromium.launchPersistentContext('', {
       headless: false,
+      bypassCSP: true,
       args: [
         '--window-size=1920,1080',
         `--disable-extensions-except=${pathToExtension}`,
         `--load-extension=${pathToExtension}`,
+        '--disable-web-security'
       ],
     });
     await use(context);
@@ -44,17 +46,18 @@ export const test = base.extend<{
     await use(extensionId);
   },
   getGemsHomePage: async ({ context }, use) => {
-    let home;
+    let home: GetGemsHomePage;
     let page;
-    const pages = context.pages();
+    // const pages = context.pages();
 
-    if (pages.length > 1) {
-      page = pages[0];
-    }
+    // if (pages.length > 1) {
+    //   page = pages[0];
+    // }
 
-    if (pages.length === 1) {
-      page = await context.newPage();
-    }
+    page = await context.newPage();
+    // if (pages.length === 1) {
+    //   page = await context.newPage();
+    // }
     // let page = findPageByTitle('', context.pages())
     // if (!page) 
     //   page = context.pages()[0];
@@ -63,8 +66,8 @@ export const test = base.extend<{
     await use(home);
   },
   tonWalletPage: async ({ context, extensionId }, use) => {
-    const [,page] = context.pages();
-    const tonWalletPage = new TonWalletPage(page, extensionId);
+    // const [,page] = context.pages();
+    const tonWalletPage = new TonWalletPage(context.pages()[0], extensionId);
 
     await use(tonWalletPage);
   },

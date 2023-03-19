@@ -206,11 +206,12 @@ export class TonWalletPage extends BasePage {
 
   async signConfirm() {
     await this.page.bringToFront();
-    await test.expect(this.signConfirmPopup).toBeVisible();
-    await this.signConfirmOkBtn.filter({ hasText: 'SIGN' }).click();
+    debugger
+    // await test.expect(this.signConfirmPopup).toBeVisible();
+    await this.signConfirmOkBtn.click({ force: true });
     // await test.expect(this.enterPasswordPopup).toBeVisible();
     await this.enterPasswordInput.fill('password');
-    await this.enterPasswordOkBtn.filter({ hasText: 'NEXT' }).click();
+    await this.enterPasswordOkBtn.click();
   }
 
   async openReceivePopup() {

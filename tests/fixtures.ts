@@ -28,7 +28,7 @@ export const test = base.extend<{
       ],
     });
     await use(context);
-    await context.close();
+    // await context.close();
   },
   background: async ({context}, use) => {
     let [background] = context.serviceWorkers();
@@ -81,8 +81,7 @@ export const test = base.extend<{
   },
   walletActions: async ({ context, extensionId }, use) => {
     const pages = context.pages();
-    debugger
-    const [,page] = context.pages();
+
     const tonWalletPage = new TonWalletPage(pages[0], extensionId);
     const actions = new TonWalletPageActions(tonWalletPage);
 

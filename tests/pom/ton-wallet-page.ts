@@ -37,7 +37,12 @@ export class TonWalletPage extends BasePage {
   readonly balance: Locator;
   readonly startImportBtn: Locator;
   readonly importContinueBtn: Locator;
-  readonly importScreen: Locator
+  readonly importScreen: Locator;
+  readonly sendConfirmPopup: Locator;
+  readonly sendConfirmOkBtn: Locator;
+  readonly processingPopup: Locator;
+  readonly donePopup: Locator;
+  readonly doneCloseBtn: Locator;
   public secretWords: string[];
   public createdAddress: string;
 
@@ -77,6 +82,11 @@ export class TonWalletPage extends BasePage {
     this.importScreen = page.locator('#import');
     this.imSureBtn = this.alertPopup.locator('.btn-lite', { hasText: 'I\'M SURE' });
     this.startScreen = page.locator('#start');
+    this.sendConfirmPopup = page.locator('#sendConfirm');
+    this.sendConfirmOkBtn = this.sendConfirmPopup.locator('#sendConfirm_okBtn');
+    this.processingPopup = page.locator('#processing');
+    this.donePopup = page.locator('#done');
+    this.doneCloseBtn = this.donePopup.locator('#done_closeBtn');
   }
 
   async goto() {
@@ -206,7 +216,6 @@ export class TonWalletPage extends BasePage {
 
   async signConfirm() {
     await this.page.bringToFront();
-    debugger
     // await test.expect(this.signConfirmPopup).toBeVisible();
     await this.signConfirmOkBtn.click({ force: true });
     // await test.expect(this.enterPasswordPopup).toBeVisible();

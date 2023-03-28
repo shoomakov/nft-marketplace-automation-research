@@ -1,5 +1,5 @@
 import { test as base, expect, chromium, type BrowserContext, type Page, type Worker } from '@playwright/test';
-import { GetGemsHomePage } from './pom/get-gems-home-page';
+import { GetGemsHomePage } from './pom/testnet.getgems.io/get-gems-home-page';
 import { TonWalletPage } from './pom/ton-wallet-page';
 import path from 'path';
 import { TonWalletPageActions } from './poa/ton-wallet-page-actions';

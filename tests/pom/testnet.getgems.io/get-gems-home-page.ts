@@ -1,9 +1,11 @@
+// get-gems-home-page.ts:
+
 import { Locator, Page } from '@playwright/test';
 
-import { BasePage } from './base-page';
-import { HeaderFragment } from './fragments/header.fragment';
-import { WalletConnectFragment } from './fragments/wallet-connect.fragment';
-import { test } from '../fixtures';
+import { BasePage } from '../base-page';
+import { HeaderFragment } from '../fragments/header.fragment';
+import { WalletConnectFragment } from '../fragments/wallet-connect.fragment';
+import { test } from '../../fixtures';
 
 export class GetGemsHomePage extends BasePage {
   readonly walletConnectModal: Locator;
@@ -24,6 +26,10 @@ export class GetGemsHomePage extends BasePage {
   async goto() {
     await this.page.goto('https://testnet.getgems.io');
   }
+
+  // async gotoUserPage() {
+  //   await this.openProfileLink.first().click();
+  // }
 
   async openWalletConnectModal() {
     await test.expect(this.modalRoot).toBeEmpty();

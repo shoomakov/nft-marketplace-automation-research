@@ -11,6 +11,7 @@ export class HeaderFragment extends BasePage {
   readonly tooltipUserName: Locator; //  LibraryDisplay LibraryDisplay--l-3 LibraryDisplay--w-semi-bold HeaderProfile__tooltip_user_name
   readonly cryptoPriceAmount: Locator;
   readonly selectNFTBtn: Locator;
+  readonly openProfileLink: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -22,6 +23,7 @@ export class HeaderFragment extends BasePage {
     this.selectNFTBtn = this.headerRight.locator('.SelectNftButton');
     this.tooltipUserName = this.tooltip.locator('.HeaderProfile__tooltip_user_name');
     this.cryptoPriceAmount = this.tooltip.locator('.CryptoPrice__amount');
+    this.openProfileLink = this.headerProfile.locator('.HeaderProfile__tooltip_user_text').filter({ hasText: 'Open profile' });
   }
 
   async openConnectWalletModal() {
@@ -34,6 +36,10 @@ export class HeaderFragment extends BasePage {
     await this.headerProfile.first().click();
     await this.page.screenshot({ path: 'toooltip_open.png' });
   }
+
+  async gotoUserPage() {
+    await this.openProfileLink.first().click();
+  }  
 
   async getMyAddressOnTooltip() {
     let address = (await this.tooltipUserName.first().innerText()).valueOf();

@@ -53,6 +53,12 @@ export class TonWalletPageActions {
       await saveSecretWords(this.tonWalletPage.secretWords.join(" "), this.createdAddress);     
     }
 
+    /**
+     * Main wallet is wallet that was created before tests, 
+     * and it's used for send tokens to created wallet. 
+     * So, we need to create main wallet before tests, 
+     * which have some tokens on it.
+     */
     buildMainWallet() {
       return new TonWallet(this.mainMnemonic);
     }

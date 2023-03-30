@@ -86,7 +86,7 @@ export const test = base.extend<{
 
     const tonWalletPage = new TonWalletPage(pages[0], extensionId);
     const actions = new TonWalletPageActions(tonWalletPage);
-    debugger
+
     await use(actions);
   },
   getGemsApp: async ({ context, extensionId }, use) => {

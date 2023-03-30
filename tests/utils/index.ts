@@ -1,5 +1,6 @@
 import { TonClient, WalletContractV3R2, fromNano, internal, toNano } from "ton";
 
+import { faker } from '@faker-js/faker';
 import fs from "fs";
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { mnemonicToWalletKey } from "ton-crypto";
@@ -99,4 +100,13 @@ export async function sendTransaction(
     currentSeqno = await walletContract.getSeqno();
   }
   console.log("transaction confirmed!");
+}
+
+export function createFakeNFT() {
+  const name = faker.animal.cat();
+  return {
+    file: faker.image.avatar(),
+    description: faker.lorem.paragraph(),
+    name: `${name} from ${faker.address.city()}`
+  }
 }

@@ -6,6 +6,7 @@ import { GetGemsHomePage } from '../pom/testnet.getgems.io/get-gems-home-page';
 import { GetGemsUserPage } from '../pom/testnet.getgems.io/get-gems-user-page';
 import { TonWallet } from '../utils/ton-wallet';
 import { TonWalletPage } from '../pom/ton-wallet-page';
+import { createFakeNFT } from '../utils';
 import { test } from '../fixtures';
 
 interface UploadMediaResponse {
@@ -27,6 +28,8 @@ let createNftPage: GetGemsCreatePage;
 let userPage: GetGemsUserPage;
 let nftContractAddress: string;
 let address;
+
+const nft = createFakeNFT();
 
 test.beforeAll(async ({ walletActions, context, extensionId }) => {
   browserContext = context;
@@ -67,7 +70,7 @@ test.afterAll(async ({ walletActions }) => {
   await browserContext.close();
 });
 
-test.describe('Connect wallet', () => {
+test.describe('Connect wallet', () => { 
 
   test('should be loaded getgems.io home page', async () => {
     await getGemsHomePage.bringToFront();
@@ -147,7 +150,7 @@ test.describe('Create NFT', () => {
 
   test('should create single nft', async () => {
     await test.step('Fill fields', async () => {
-      await createNftPage.mainNftPageCreate().mintNftForm().fillCommonRightsFields('Test name', 'Test description');
+      await createNftPage.mainNftPageCreate().mintNftForm().fillCommonRightsFields(nft.name, nft.description);
     });
     
     await test.step('should open modal by submitting form', async () => {
@@ -194,10 +197,11 @@ test.describe('Create NFT', () => {
     });
     
     await test.step('navigate to nft page', async () => {
-      const title = await userPage.nftPreviewTitle.filter({ hasText: 'Test name' });
+      const title = await userPage.nftPreviewTitle.filter({ hasText: nft.name });
       await test.expect(title).toBeVisible();
       
       await title.click();
+      debugger
       await test.expect(userPage.page).toHaveURL(`https://testnet.getgems.io/nft/${nftContractAddress}`);
     });  
   });

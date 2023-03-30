@@ -1,3 +1,5 @@
+// ton-wallet-page.ts:
+
 import { Locator, Page } from '@playwright/test';
 
 import { BasePage } from './base-page';
@@ -45,6 +47,7 @@ export class TonWalletPage extends BasePage {
   readonly doneCloseBtn: Locator;
   public secretWords: string[];
   public createdAddress: string;
+  readonly refreshBtn: Locator;
 
   constructor(page: Page, extensionId: string) {
     super(page);
@@ -87,12 +90,18 @@ export class TonWalletPage extends BasePage {
     this.processingPopup = page.locator('#processing');
     this.donePopup = page.locator('#done');
     this.doneCloseBtn = this.donePopup.locator('#done_closeBtn');
+    this.refreshBtn = page.locator('#main_refreshBtn');
   }
 
   async goto() {
     await this.page.goto(`chrome-extension://${this.extensionId}/index.html`);
     await this.page.waitForFunction(() => document.title === 'TON Wallet')
     await test.expect(this.page).toHaveTitle('TON Wallet');
+  }
+
+  async refreshPage() {
+    await this.page.reload();
+    await this.refreshBtn.click();
   }
 
   async createWallet() {

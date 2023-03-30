@@ -3,6 +3,7 @@ import { GetGemsHomePage } from './pom/testnet.getgems.io/get-gems-home-page';
 import { TonWalletPage } from './pom/ton-wallet-page';
 import path from 'path';
 import { TonWalletPageActions } from './poa/ton-wallet-page-actions';
+import { GetGemsApp } from './pom/testnet.getgems.io/get-gems-app';
 
 
 const findPageByTitle = (title: string, pages: Page[]) => pages.find(async item => await item.title() === title)
@@ -14,6 +15,7 @@ export const test = base.extend<{
   tonWalletPage: TonWalletPage;
   walletActions: TonWalletPageActions;
   background: Worker;
+  getGemsApp: GetGemsApp;
 }>({
   context: async ({ }, use) => {
     const pathToExtension = path.join(__dirname, '../userData/tonwallet/1.1.42_0');
@@ -84,7 +86,13 @@ export const test = base.extend<{
 
     const tonWalletPage = new TonWalletPage(pages[0], extensionId);
     const actions = new TonWalletPageActions(tonWalletPage);
-
+    debugger
     await use(actions);
+  },
+  getGemsApp: async ({ context, extensionId }, use) => {
+    const page = await context.newPage();
+    const app = new GetGemsApp(page, context.pages()[0], extensionId);
+
+    await use(app);
   },
 });

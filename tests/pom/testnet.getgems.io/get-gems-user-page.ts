@@ -1,5 +1,3 @@
-// get-gems-user-page.ts:
-
 import { Locator, Page } from "@playwright/test";
 
 import { BasePage } from "../base-page";

@@ -8,6 +8,10 @@ interface Wallets {
   created: TonWallet;
 }
 
+/**
+ * This class contains all actions that can be performed on the TON wallet page
+ * I think that better to move all actions from this class into the GetGemsApp
+ */
 export class TonWalletPageActions {
     private generatedMnemonic: string;
     public createdAddress: string;

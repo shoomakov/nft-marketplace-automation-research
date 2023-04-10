@@ -1,5 +1,3 @@
-// ton-wallet-page.ts:
-
 import { Locator, Page } from '@playwright/test';
 
 import { BasePage } from './base-page';
@@ -225,11 +223,23 @@ export class TonWalletPage extends BasePage {
 
   async signConfirm() {
     await this.page.bringToFront();
-    // await test.expect(this.signConfirmPopup).toBeVisible();
     await this.signConfirmOkBtn.click({ force: true });
+    await this.enterPasswordInput.fill('password');
+    await this.enterPasswordOkBtn.click();
+  }
+
+  async sendConfirm() {
+    await this.page.bringToFront();
+    await this.sendConfirmPopup.waitFor({ state: 'visible' });
+    // await test.expect(this.signConfirmPopup).toBeVisible();
+    await this.sendConfirmOkBtn.click({ force: true });
     // await test.expect(this.enterPasswordPopup).toBeVisible();
     await this.enterPasswordInput.fill('password');
     await this.enterPasswordOkBtn.click();
+  }
+
+  async closeDoneModal() {
+    await this.doneCloseBtn.click();
   }
 
   async openReceivePopup() {

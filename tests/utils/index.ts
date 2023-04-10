@@ -4,6 +4,7 @@ import { faker } from '@faker-js/faker';
 import fs from "fs";
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { mnemonicToWalletKey } from "ton-crypto";
+import openai from 'openai';
 import path from 'path';
 
 export async function saveSecretWords(words: string, address: string) {

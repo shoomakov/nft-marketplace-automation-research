@@ -26,7 +26,8 @@ export const test = base.extend<{
         '--window-size=1920,1080',
         `--disable-extensions-except=${pathToExtension}`,
         `--load-extension=${pathToExtension}`,
-        '--disable-web-security'
+        '--disable-web-security',
+        '--auto-open-devtools-for-tabs'
       ],
     });
     await use(context);
